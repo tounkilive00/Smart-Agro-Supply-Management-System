@@ -1,0 +1,136 @@
+# Key Performance Indicators (KPIs)
+## Smart Agro-Supply Management System
+
+## 1. Inventory Management KPIs
+
+### 1.1 Stock Availability
+| KPI | Formula | Target | Frequency |
+|-----|---------|--------|-----------|
+| Stock Availability Rate | (Items in Stock / Total Items) × 100 | > 95% | Daily |
+| Stockout Frequency | Count of stockout events | < 2/month | Weekly |
+| Stock Turnover Ratio | Cost of Goods Sold / Average Inventory | 4-6 | Monthly |
+
+### 1.2 Inventory Efficiency
+| KPI | Formula | Target | Frequency |
+|-----|---------|--------|-----------|
+| Inventory Accuracy | (Physical Count / System Count) × 100 | > 98% | Monthly |
+| Carrying Cost Rate | (Carrying Costs / Average Inventory Value) × 100 | < 25% | Quarterly |
+| Obsolete Stock Rate | (Obsolete Items / Total Items) × 100 | < 5% | Quarterly |
+
+## 2. Supply Chain KPIs
+
+### 2.1 Order Management
+| KPI | Formula | Target | Frequency |
+|-----|---------|--------|-----------|
+| Order Fill Rate | (Orders Filled Completely / Total Orders) × 100 | > 90% | Daily |
+| Order Cycle Time | Order Date to Delivery Date (Avg) | < 7 days | Weekly |
+| Back Order Rate | (Back Orders / Total Orders) × 100 | < 5% | Weekly |
+
+### 2.2 Supplier Performance
+| KPI | Formula | Target | Frequency |
+|-----|---------|--------|-----------|
+| On-Time Delivery | (On-Time Deliveries / Total Deliveries) × 100 | > 95% | Monthly |
+| Supplier Quality Rate | (Accepted Items / Received Items) × 100 | > 98% | Monthly |
+| Supplier Lead Time | Order to Delivery (Avg by Supplier) | Industry Standard | Quarterly |
+
+## 3. Financial KPIs
+
+### 3.1 Cost Management
+| KPI | Formula | Target | Frequency |
+|-----|---------|--------|-----------|
+| Cost per Hectare | Total Supply Cost / Total Hectares | Decrease 5% YoY | Monthly |
+| Inventory Carrying Cost | (Storage + Insurance + Obsolescence) / Avg Inventory | < 20% | Quarterly |
+| Return on Inventory | (Gross Profit / Average Inventory) × 100 | > 30% | Quarterly |
+
+### 3.2 Revenue & Growth
+| KPI | Formula | Target | Frequency |
+|-----|---------|--------|-----------|
+| Revenue per Farm | Total Revenue / Number of Farms | Increase 10% YoY | Monthly |
+| Farm Retention Rate | (Retained Farms / Total Farms) × 100 | > 85% | Quarterly |
+| New Farm Acquisition | New Farms / Total Farms | > 15% | Quarterly |
+
+## 4. Operational KPIs
+
+### 4.1 Farm Performance
+| KPI | Formula | Target | Frequency |
+|-----|---------|--------|-----------|
+| Yield per Hectare | Total Production / Total Hectares | Industry Benchmark | Per Season |
+| Input Efficiency | (Actual Yield / Expected Yield) × 100 | > 90% | Per Season |
+| Crop Rotation Compliance | (Farms Following Rotation / Total Farms) × 100 | > 80% | Annual |
+
+### 4.2 Sustainability KPIs
+| KPI | Formula | Target | Frequency |
+|-----|---------|--------|-----------|
+| Water Usage Efficiency | (Crop Yield / Water Used) | Increase 10% YoY | Per Season |
+| Chemical Usage Reduction | (Current Usage / Previous Usage) × 100 | < 90% | Annual |
+| Organic Conversion Rate | (Organic Farms / Total Farms) × 100 | > 20% | Annual |
+
+## 5. Customer Service KPIs
+
+### 5.1 Farmer Satisfaction
+| KPI | Measurement Method | Target | Frequency |
+|-----|-------------------|--------|-----------|
+| Customer Satisfaction Score | Survey (1-5 scale) | > 4.2 | Quarterly |
+| Issue Resolution Time | Ticket Open to Close (Avg) | < 48 hours | Weekly |
+| Service Availability | Uptime Percentage | > 99% | Monthly |
+
+### 5.2 Service Quality
+| KPI | Formula | Target | Frequency |
+|-----|---------|--------|-----------|
+| Order Accuracy | (Accurate Orders / Total Orders) × 100 | > 98% | Weekly |
+| Delivery Accuracy | (On-Time Deliveries / Total Deliveries) × 100 | > 95% | Weekly |
+| Complaint Rate | (Complaints / Total Orders) × 100 | < 2% | Monthly |
+
+## 6. Technology & System KPIs
+
+### 6.1 System Performance
+| KPI | Formula | Target | Frequency |
+|-----|---------|--------|-----------|
+| System Uptime | (Available Time / Total Time) × 100 | > 99.5% | Monthly |
+| Query Response Time | Average response time | < 2 seconds | Daily |
+| Data Accuracy | (Accurate Records / Total Records) × 100 | > 99% | Monthly |
+
+### 6.2 Security & Compliance
+| KPI | Formula | Target | Frequency |
+|-----|---------|--------|-----------|
+| Security Incidents | Count of security violations | 0 | Monthly |
+| Audit Trail Completeness | (Audited Actions / Total Actions) × 100 | 100% | Daily |
+| Compliance Rate | (Compliant Processes / Total Processes) × 100 | 100% | Quarterly |
+
+## 7. Dashboard KPIs (Executive View)
+
+### 7.1 Top-Level Metrics
+1. **Total Active Farms**: Current count of active farms
+2. **Monthly Order Value**: Revenue from orders this month
+3. **Inventory Value**: Total value of current inventory
+4. **Stock Availability**: Percentage of items in stock
+5. **Customer Satisfaction**: Current CSAT score
+
+### 7.2 Trend Indicators
+1. **Order Growth**: MoM order value growth
+2. **Farm Growth**: MoM new farm acquisition
+3. **Cost Efficiency**: Cost per hectare trend
+4. **Delivery Performance**: On-time delivery trend
+5. **Inventory Turnover**: Stock movement rate
+
+## 8. KPI Calculation Examples (SQL)
+
+```sql
+-- Example: Calculate Stock Availability Rate
+SELECT 
+    ROUND((SUM(CASE WHEN current_stock > 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*)), 2) as stock_availability_rate
+FROM supplies;
+
+-- Example: Calculate Order Fill Rate
+SELECT 
+    ROUND((SUM(CASE WHEN status = 'Delivered' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)), 2) as order_fill_rate
+FROM orders
+WHERE order_date >= TRUNC(SYSDATE, 'MM');
+
+-- Example: Calculate Cost per Hectare
+SELECT 
+    ROUND(SUM(o.quantity * o.unit_price_at_order) / SUM(f.size_hectares), 2) as cost_per_hectare
+FROM orders o
+JOIN farms f ON o.farm_id = f.farm_id
+WHERE o.status = 'Delivered'
+  AND EXTRACT(MONTH FROM o.actual_delivery) = EXTRACT(MONTH FROM SYSDATE);
